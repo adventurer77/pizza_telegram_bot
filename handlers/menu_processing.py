@@ -1,8 +1,21 @@
 from aiogram.types import InputMediaPhoto
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.orm_query import orm_add_to_cart, orm_delete_from_cart, orm_get_banner, orm_get_categories, orm_get_products, orm_get_user_carts, orm_reduce_product_in_cart
-from kbds.inline import get_products_btns, get_user_cart, get_user_catalog_btns, get_user_main_btns
+from database.orm_query import (
+    orm_add_to_cart,
+    orm_delete_from_cart,
+    orm_get_banner,
+    orm_get_categories,
+    orm_get_products,
+    orm_get_user_carts,
+    orm_reduce_product_in_cart,
+)
+from kbds.inline import (
+    get_products_btns,
+    get_user_cart,
+    get_user_catalog_btns,
+    get_user_main_btns,
+)
 from utils.paginator import Paginator
 
 
@@ -64,16 +77,16 @@ async def products(session, level, category, page):
 
 
 async def carts(session, level, menu_name, page, user_id, product_id):
-    if menu_name =="delete":
-        await orm_delete_from_cart(session,user_id,product_id)
+    if menu_name == "delete":
+        await orm_delete_from_cart(session, user_id, product_id)
         if page > 1:
-            page -=1
+            page -= 1
     elif menu_name == "decrement":
         is_cart = await orm_reduce_product_in_cart(session, user_id, product_id)
         if page > 1 and not is_cart:
             page -= 1
     elif menu_name == "increment":
-        await orm_add_to_cart(session,user_id,product_id)
+        await orm_add_to_cart(session, user_id, product_id)
 
     carts = await orm_get_user_carts(session, user_id)
 

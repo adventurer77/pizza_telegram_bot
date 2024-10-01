@@ -40,7 +40,7 @@ async def on_startup(bot):
 
 
 async def on_shutdown(bot):
-    print('бот лег')
+    print('Bot error')
 
 
 async def main():

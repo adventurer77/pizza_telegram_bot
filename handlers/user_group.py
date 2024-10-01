@@ -16,9 +16,8 @@ user_group_router.edited_message.filter(ChatTypeFilter(["group", "supergroup"]))
 async def get_admins(message: types.Message, bot: Bot):
     chat_id = message.chat.id
     admins_list = await bot.get_chat_administrators(chat_id)
-    #просмотреть все данные и свойства полученных объектов
-    #print(admins_list)
-    # Код ниже это генератор списка, как и этот x = [i for i in range(10)]
+    # print(admins_list)
+    # The code below is a list generator
     admins_list = [
         member.user.id
         for member in admins_list
@@ -27,7 +26,7 @@ async def get_admins(message: types.Message, bot: Bot):
     bot.my_admins_list = admins_list
     if message.from_user.id in admins_list:
         await message.delete()
-    #print(admins_list)
+    # print(admins_list)
 
 
 def clean_text(text: str):
@@ -38,8 +37,6 @@ def clean_text(text: str):
 @user_group_router.message()
 async def cleaner(message: types.Message):
     if restricted_words.intersection(clean_text(message.text.lower()).split()):
-        await message.answer(
-            f"{message.from_user.first_name}, follow chat rules "
-        )
+        await message.answer(f"{message.from_user.first_name}, follow chat rules ")
         await message.delete()
         # await message.chat.ban(message.from_user.id)

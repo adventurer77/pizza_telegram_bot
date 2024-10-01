@@ -36,6 +36,7 @@ ADMIN_KB = get_keyboard(
 
 ################# Admin menu ############################
 
+
 @admin_router.message(Command("admin"))
 async def admin_features(message: types.Message):
     await message.answer("What do you want to do?", reply_markup=ADMIN_KB)
@@ -45,9 +46,7 @@ async def admin_features(message: types.Message):
 async def admin_features(message: types.Message, session: AsyncSession):
     categories = await orm_get_categories(session)
     btns = {category.name: f"category_{category.id}" for category in categories}
-    await message.answer(
-        "Select category", reply_markup=get_callback_btns(btns=btns)
-    )
+    await message.answer("Select category", reply_markup=get_callback_btns(btns=btns))
 
 
 @admin_router.callback_query(F.data.startswith("category_"))
@@ -97,7 +96,6 @@ async def add_image2(message: types.Message, state: FSMContext, session: AsyncSe
     await state.set_state(AddBanner.image)
 
 
-
 # The handler for canceling and resetting the state should always be here,
 # after we have just reached state number 1 (elementary sequence of filters)
 @admin_router.message(StateFilter("*"), Command("cancel"))
@@ -106,8 +104,6 @@ async def cancel_handler_banner(message: types.Message, state: FSMContext) -> No
     current_state = await state.get_state()
     if current_state is None:
         return
-    if AddProduct.product_for_change:
-        AddProduct.product_for_change = None
     await state.clear()
     await message.answer("Action cancelled", reply_markup=ADMIN_KB)
 
@@ -165,7 +161,7 @@ class AddProduct(StatesGroup):
     }
 
 
-# Становимся в состояние ожидания ввода name
+# We enter the state of waiting for the input name
 @admin_router.callback_query(StateFilter(None), F.data.startswith("change_"))
 async def change_product_callback(
     callback: types.CallbackQuery, state: FSMContext, session: AsyncSession
@@ -183,7 +179,7 @@ async def change_product_callback(
     await state.set_state(AddProduct.name)
 
 
-# Становимся в состояние ожидания ввода name
+# We enter the state of waiting for the input name
 @admin_router.message(StateFilter(None), F.text == "Add product")
 async def add_product(message: types.Message, state: FSMContext):
     await message.answer(
